@@ -1,0 +1,9 @@
+version: '3.8'
+
+services:
+  test_tag_manager:
+    container_name: tag-manager
+    tty: true
+    build:
+      context: ./
+      dockerfile: ./Dockerfile

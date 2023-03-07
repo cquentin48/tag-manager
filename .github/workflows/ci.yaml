@@ -1,0 +1,17 @@
+name: Tag manager CLI continuous integration
+
+on: [push]
+
+jobs:
+  continuous-integration:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build web app stack
+        run: docker-compose up -d --build
+      - name: Check if the code is written badly or not
+        run: docker exec tag-manager make lint
+      - name: Generate unit test coverage report of user created code while launching the unit test suite.
+        run: docker exec tag-manager make coverage_gen
+      - name: Displays result
+        run: docker exec tag-manager make coverage_shell
