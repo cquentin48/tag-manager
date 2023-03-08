@@ -97,3 +97,31 @@ class TestParser(unittest.TestCase):
         self.assertEqual(operation_name,name)
         self.assertEqual(operation_version_number,version_number)
         self.assertEqual(operation_changelog_message,changelog_message)
+
+    def test_update_args(self):
+        """This function should correctly parse args
+        and update the parser 
+        """
+        # Given
+        output = "changelog"
+        name = "New version"
+        version_number = "1.0"
+        changelog_message = "test message"
+
+        args = [
+            "--output", output,
+            "--name", name,
+            "--version", version_number,
+            "--changelog", changelog_message,
+        ]
+
+        parser = Parser()
+
+        # Acts
+        parser.update_args(args)
+
+        # Asserts
+        self.assertEqual(parser.output,output)
+        self.assertEqual(parser.name,name)
+        self.assertEqual(parser.version_number,version_number)
+        self.assertEqual(parser.message,changelog_message)

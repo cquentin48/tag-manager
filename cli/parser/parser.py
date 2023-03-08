@@ -13,8 +13,8 @@ class Parser:
         self.parser = self._init_parser()
         self.output = ""
         self.name = ""
-        self.number = ""
-        self.changelog = ""
+        self.version_number = ""
+        self.message = ""
         self.validator = None
 
     def _init_parser_args(self,parser: argparse.ArgumentParser): #pragma: no cover
@@ -27,6 +27,19 @@ class Parser:
         parser.add_argument('-n','--name')
         parser.add_argument('-v','--version')
         parser.add_argument('-c','--changelog')
+
+    def update_args(self, args: list):
+        """Update the args input by the user
+        and set the properties
+
+        Args:
+            args (list): Args input of the user
+        """
+        [output,name,version,changelog] = self.parse_args(args)
+        self.output = output
+        self.name = name
+        self.version_number = version
+        self.message = changelog
 
 
     def _init_parser(self)->argparse.ArgumentParser: #pragma: no cover
