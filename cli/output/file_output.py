@@ -34,8 +34,13 @@ class FileOutput:
             str: parent directory file path
         """
         path_list:list = self.file_path.split("/")
+        if len(path_list) < 2:
+            raise \
+                TypeError(
+                    "The file path doesn't contains a directory and a file!"
+                )
         parent_file_path_list:list = path_list[:-1]
-        parent_file_path_file = parent_file_path_list.join("/")
+        parent_file_path_file = "/".join(parent_file_path_list)
         return parent_file_path_file
 
     def does_parent_directory_path_exist(self)-> bool:
@@ -57,19 +62,19 @@ class FileOutput:
 
         Otherwise, it just append the content to the later.
         """
-        output_mode = "a+"
+        output_mode = "a"
         if not self.does_parent_directory_path_exist():
             raise FileNotFoundError("parent-directory-path-not-found")
         if self.does_parent_directory_path_exist() and not os.path.exists(self.file_path):
-            output_mode = 'w+'
+            output_mode = 'w'
         else:
-            output_mode = 'a+'
+            output_mode = 'a'
 
-        with open(self.file_path,output_mode,mode=output_mode,encoding="utf-8") as file:
-            file.write("**************")
-            file.write("Name : "+str(self.name))
-            file.write("Version: "+str(self.version))
-            file.write("---------------")
-            file.write("Changelog")
-            file.write(str(self.message))
-            file.write("**************")
+        with open(self.file_path,output_mode,encoding="utf-8") as file:
+            file.write("**************\n")
+            file.write("Name: "+str(self.name)+"\n")
+            file.write("Version: "+str(self.version)+"\n")
+            file.write("---------------"+"\n")
+            file.write("Changelog"+"\n")
+            file.write(str(self.message)+"\n")
+            file.write("**************"+"\n")
