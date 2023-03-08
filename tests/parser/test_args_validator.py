@@ -1,5 +1,10 @@
 import unittest
-from cli.parser.args_validator import ArgsValidator
+from cli.parser.args_validator import ArgsValidator,\
+    VALIDATOR_ARGS_UNKOWN_OUTPUT, VALIDATOR_ARGS_NUMBER_OK,\
+    VALIDATOR_ARGS_CHANGELOG_NO_MESSAGE, VALIDATOR_ARGS_CHANGELOG_NO_NAME,\
+    VALIDATOR_ARGS_CHANGELOG_NO_VERSION_NUMBER, VALIDATOR_ARGS_CHANGELOG_OK,\
+    VALIDATOR_ARGS_MESSAGE_NO_MESSAGE, VALIDATOR_ARGS_MESSAGE_OK,\
+    VALIDATOR_ARGS_NAME_NO_NAME, VALIDATOR_ARGS_NAME_OK, VALIDATOR_ARGS_NUMBER_NO_NUMBER
 
 class TestArgsValidator(unittest.TestCase):
     """Args validator test case class
@@ -21,7 +26,7 @@ class TestArgsValidator(unittest.TestCase):
         operation_output = validator.verify_args()
 
         # Asserts
-        self.assertEqual(operation_output,True)
+        self.assertEqual(operation_output,VALIDATOR_ARGS_CHANGELOG_OK)
 
     def test_verify_args_name_ok(self):
         """Check if the validator returns true
@@ -37,7 +42,7 @@ class TestArgsValidator(unittest.TestCase):
         output = validator.verify_args()
 
         # Asserts
-        self.assertEqual(output,True)
+        self.assertEqual(output,VALIDATOR_ARGS_NAME_OK)
 
     def test_verify_args_number_ok(self):
         """Check if the validator returns true
@@ -53,7 +58,7 @@ class TestArgsValidator(unittest.TestCase):
         output = validator.verify_args()
 
         # Asserts
-        self.assertEqual(output,True)
+        self.assertEqual(output,VALIDATOR_ARGS_NUMBER_OK)
 
     def test_verify_args_changelog_msg_ok(self):
         """Check if the validator returns true
@@ -70,7 +75,7 @@ class TestArgsValidator(unittest.TestCase):
         output = validator.verify_args()
 
         # Asserts
-        self.assertEqual(output,True)
+        self.assertEqual(output,VALIDATOR_ARGS_MESSAGE_OK)
 
     def test_verify_args_changelog_no_name_error(self):
         """This test should raise an exception when
@@ -83,8 +88,11 @@ class TestArgsValidator(unittest.TestCase):
 
         validator = ArgsValidator(output,version=version,changelog=changelog)
 
-        # Acts & Raise
-        self.assertRaises(TypeError,validator.verify_args)
+        # Acts
+        output = validator.verify_args()
+
+        # Asserts
+        self.assertEqual(output,VALIDATOR_ARGS_CHANGELOG_NO_NAME)
 
     def test_verify_args_changelog_no_number_error(self):
         """This test should raise an exception when
@@ -97,8 +105,11 @@ class TestArgsValidator(unittest.TestCase):
 
         validator = ArgsValidator(output,name=name,changelog=changelog)
 
-        # Acts & Raise
-        self.assertRaises(TypeError,validator.verify_args)
+        # Acts
+        output = validator.verify_args()
+
+        # Asserts
+        self.assertEqual(output,VALIDATOR_ARGS_CHANGELOG_NO_VERSION_NUMBER)
 
     def test_verify_args_changelog_no_changelog_message_error(self):
         """This test should raise an exception when
@@ -111,10 +122,13 @@ class TestArgsValidator(unittest.TestCase):
 
         validator = ArgsValidator(output,name=name,version=version)
 
-        # Acts & Raise
-        self.assertRaises(TypeError,validator.verify_args)
+        # Acts
+        output = validator.verify_args()
 
-    def test_verify_args_name_no_name_message_error(self):
+        # Asserts
+        self.assertEqual(output,VALIDATOR_ARGS_CHANGELOG_NO_MESSAGE)
+
+    def test_verify_args_name_no_name_error(self):
         """This test should raise an exception when
         the version name is not entered with the name output
         """
@@ -123,10 +137,13 @@ class TestArgsValidator(unittest.TestCase):
 
         validator = ArgsValidator(output)
 
-        # Acts & Raise
-        self.assertRaises(TypeError,validator.verify_args)
+        # Acts
+        output = validator.verify_args()
 
-    def test_verify_args_number_no_number_message_error(self):
+        # Asserts
+        self.assertEqual(output,VALIDATOR_ARGS_NAME_NO_NAME)
+
+    def test_verify_args_number_no_number_error(self):
         """This test should raise an exception when
         the version number is not entered with the number output
         """
@@ -135,10 +152,13 @@ class TestArgsValidator(unittest.TestCase):
 
         validator = ArgsValidator(output)
 
-        # Acts & Raise
-        self.assertRaises(TypeError,validator.verify_args)
+        # Acts
+        output = validator.verify_args()
 
-    def test_verify_args_changelog_message_no_changelog_message_message_error(self):
+        # Asserts
+        self.assertEqual(output,VALIDATOR_ARGS_NUMBER_NO_NUMBER)
+
+    def test_verify_args_changelog_message_no_message_error(self):
         """This test should raise an exception when
         the version changelog message is not entered with the changelog message output
         """
@@ -147,8 +167,11 @@ class TestArgsValidator(unittest.TestCase):
 
         validator = ArgsValidator(output)
 
-        # Acts & Raise
-        self.assertRaises(TypeError,validator.verify_args)
+        # Acts
+        output = validator.verify_args()
+
+        # Asserts
+        self.assertEqual(output,VALIDATOR_ARGS_MESSAGE_NO_MESSAGE)
 
     def test_verify_args_other_output_error(self):
         """This test should raise an exception when
@@ -159,5 +182,8 @@ class TestArgsValidator(unittest.TestCase):
 
         validator = ArgsValidator(output)
 
-        # Acts & Raise
-        self.assertRaises(TypeError,validator.verify_args)
+        # Acts
+        output = validator.verify_args()
+
+        # Asserts
+        self.assertEqual(output,VALIDATOR_ARGS_UNKOWN_OUTPUT)
