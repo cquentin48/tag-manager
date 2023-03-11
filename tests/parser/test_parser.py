@@ -98,7 +98,7 @@ class TestParser(unittest.TestCase):
         self.assertEqual(operation_version_number,version_number)
         self.assertEqual(operation_changelog_message,changelog_message)
 
-    def test_update_args(self):
+    def test_update_args_ok(self):
         """This function should correctly parse args
         and update the parser 
         """
@@ -125,3 +125,93 @@ class TestParser(unittest.TestCase):
         self.assertEqual(parser.name,name)
         self.assertEqual(parser.version_number,version_number)
         self.assertEqual(parser.message,changelog_message)
+
+    def test_update_args_fails_raise_except(self):
+        """This function with incorrect input should raise
+        an exception and exit 
+        """
+        # Given
+        output = "mlkmk"
+        name = "New version"
+        version_number = "1.0"
+        changelog_message = "test message"
+
+        args = [
+            "--output", output,
+            "--name", name,
+            "--version", version_number,
+            "--changelog", changelog_message,
+        ]
+
+        parser = Parser()
+
+        # Acts & Assert
+        self.assertRaises(SystemExit,parser.update_args,args)
+
+    def test_verify_args_incorrect_name_type_error(self):
+        """The method verify_args of the tested should raise
+        a TypeError if the version name entered is incorrect
+        """
+        # Given
+        # Given
+        output = "name"
+        name = ""
+        version_number = "1.0"
+        changelog_message = "test message"
+
+        args = [
+            "--output", output,
+            "--name", name,
+            "--version", version_number,
+            "--changelog", changelog_message,
+        ]
+
+        parser = Parser()
+
+        # Acts & Assert
+        self.assertRaises(SystemExit,parser.update_args,args)
+
+    def test_verify_args_incorrect_version_number_type_error(self):
+        """The method verify_args of the tested should raise
+        a TypeError if the version number entered is incorrect
+        """
+        # Given
+        # Given
+        output = "number"
+        name = "My version"
+        version_number = ""
+        changelog_message = "test message"
+
+        args = [
+            "--output", output,
+            "--name", name,
+            "--version", version_number,
+            "--changelog", changelog_message,
+        ]
+
+        parser = Parser()
+
+        # Acts & Assert
+        self.assertRaises(SystemExit,parser.update_args,args)
+    def test_verify_args_incorrect_changelog_type_error(self):
+        """The method verify_args of the tested should raise
+        a TypeError if the version changelog entered is incorrect
+        """
+        # Given
+        # Given
+        output = "changelog_message"
+        name = "My version"
+        version_number = "1.0"
+        changelog_message = ""
+
+        args = [
+            "--output", output,
+            "--name", name,
+            "--version", version_number,
+            "--changelog", changelog_message,
+        ]
+
+        parser = Parser()
+
+        # Acts & Assert
+        self.assertRaises(SystemExit,parser.update_args,args)

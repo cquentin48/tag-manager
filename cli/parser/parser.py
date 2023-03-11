@@ -1,6 +1,8 @@
 import argparse
+import sys
 
-from cli.parser.args_validator import ArgsValidator
+from cli.parser.args_validator import ArgsValidator, VALIDATOR_ARGS_CHANGELOG_OK,\
+    VALIDATOR_ARGS_MESSAGE_OK, VALIDATOR_ARGS_NAME_OK,VALIDATOR_ARGS_NUMBER_OK
 
 
 class Parser:
@@ -28,6 +30,49 @@ class Parser:
         parser.add_argument('-v','--version')
         parser.add_argument('-c','--changelog')
 
+    def init_args(self, output:str,name:str,version_number:str,message:str):
+        """Initialise the args given by the user in the cli
+
+        Args:
+            output (str): output type
+            name (str): version name
+            version_number (str): version number
+            message (str): version changes
+        """
+        self.output = output
+        self.name = name
+        self.version_number = version_number
+        self.message = message
+
+    def verify_args(self, output: str):
+        """Verify the args and raises an exception if
+        necessary
+
+        Args:
+            output (str): output type (changelog|name|number|changelog_message)
+
+        Raises:
+            TypeError: Incorrect validation or unknown output type
+        """
+        validator_args_validation_result = self.validator.verify_args()
+
+        match output:
+            case "changelog":
+                if validator_args_validation_result != VALIDATOR_ARGS_CHANGELOG_OK:
+                    raise TypeError("Incorrect inputs for the changelog file")
+            case "name":
+                if validator_args_validation_result != VALIDATOR_ARGS_NAME_OK:
+                    raise TypeError("Incorrect inputs for the tag name display")
+            case "number":
+                if validator_args_validation_result != VALIDATOR_ARGS_NUMBER_OK:
+                    raise TypeError("Incorrect inputs for the tag version number display")
+            case "changelog_message":
+                if validator_args_validation_result != VALIDATOR_ARGS_MESSAGE_OK:
+                    raise TypeError("Incorrect inputs for the tag message display")
+            case _:
+                raise TypeError("Incorrect output")
+
+
     def update_args(self, args: list):
         """Update the args input by the user
         and set the properties
@@ -35,11 +80,13 @@ class Parser:
         Args:
             args (list): Args input of the user
         """
-        [output,name,version,changelog] = self.parse_args(args)
-        self.output = output
-        self.name = name
-        self.version_number = version
-        self.message = changelog
+        [output,name,version,message] = self.parse_args(args)
+        try:
+            self.validator = self.create_validator(output,name,version,message)
+            self.verify_args(output)
+            self.init_args(output,name,version,message)
+        except TypeError as _:
+            sys.exit(1)
 
 
     def _init_parser(self)->argparse.ArgumentParser: #pragma: no cover
