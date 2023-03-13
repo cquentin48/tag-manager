@@ -1,7 +1,7 @@
 FROM python:latest
 
-WORKDIR /app
+WORKDIR /cli
 
-COPY ./ /app/
+COPY ./ /cli/
 
 RUN make install

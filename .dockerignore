@@ -1,0 +1,8 @@
+.idea/
+.github/workflow
+.pytest_cache
+.venv
+build/
+htmlcov/
+unit_test/
+.coverage
