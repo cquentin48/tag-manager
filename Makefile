@@ -1,6 +1,18 @@
 ## Run the unit test suite
 test:
-	python -m unittest
+	pytest tests/
+
+## HTML Unit test report
+test_report:
+	pytest --html=unit_test/report.html --self-contained-html
+
+## Generates executable
+exec_file:
+	pyinstaller --onefile ./cli/main/main.py
+
+## Generates executable silent
+exec_file_silent:
+	pyinstaller --noconsole --onefile ./cli/main/main.py
 
 ## Create coverage data
 coverage_gen:

@@ -1,5 +1,5 @@
 import unittest
-from cli.parser.args_validator import ArgsValidator,\
+from cli.cli_parser.args_validator import ArgsValidator,\
     VALIDATOR_ARGS_UNKOWN_OUTPUT, VALIDATOR_ARGS_NUMBER_OK,\
     VALIDATOR_ARGS_CHANGELOG_NO_MESSAGE, VALIDATOR_ARGS_CHANGELOG_NO_NAME,\
     VALIDATOR_ARGS_CHANGELOG_NO_VERSION_NUMBER, VALIDATOR_ARGS_CHANGELOG_OK,\
@@ -12,7 +12,7 @@ class TestArgsValidator(unittest.TestCase):
 
     def test_verify_args_changelog_ok(self):
         """Check if the validator returns true
-        when the parser has every info for the changelog
+        when the cli_parser has every info for the changelog
         """
         # Given
         name = "My version"
@@ -30,7 +30,7 @@ class TestArgsValidator(unittest.TestCase):
 
     def test_verify_args_name_ok(self):
         """Check if the validator returns true
-        when the parser has every info for the name
+        when the cli_parser has every info for the name
         """
         # Given
         name = "My version"
@@ -46,7 +46,7 @@ class TestArgsValidator(unittest.TestCase):
 
     def test_verify_args_number_ok(self):
         """Check if the validator returns true
-        when the parser has every info for the number
+        when the cli_parser has every info for the number
         """
         # Given
         number = "1.0"
@@ -62,7 +62,7 @@ class TestArgsValidator(unittest.TestCase):
 
     def test_verify_args_changelog_msg_ok(self):
         """Check if the validator returns true
-        when the parser has every info for the
+        when the cli_parser has every info for the
         changelog message
         """
         # Given

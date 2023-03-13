@@ -1,21 +1,56 @@
 import unittest
+import subprocess
+import os
+import shutil
 
-from cli.main import hello_world
+from cli.main.main import init_parser
+from cli.cli_parser.parser import Parser
+
 
 class TestMain(unittest.TestCase):
     """Sample unit test class
-
     """
 
-    def test_hello_world(self):
-        """Check in this test if the
-        hello world message is displayed
+    def test_init_parser_returns_parser(self):
+        """Check in this test if this
+        method returns a CLI Parser
         """
         # Given
+        args = ['-o', 'name', '-n', 'My version']
+        expected_result = Parser()
+        expected_result.update_args(args)
 
         # Test
-        operation_result = \
-            hello_world()
+        operation_result = init_parser(args)
 
         # Asserts
-        self.assertEqual(operation_result,"hello world!")
+        self.assertTrue(operation_result == expected_result)
+
+    def test_sample_main_function(self):
+        """Execute the main function in a terminal
+        and check if the result is the expected one
+        """
+        # Given
+        cwd = os.getcwd()
+        make_path = cwd.replace("/test/test_main.py","/")
+        gen_exec_cmd = ["make", "exec_file_silent"]
+        shell_cmd = ["./main", "-o", "name", "-n", "\"My version\""]
+        expected_result = "My version\n"
+
+        # Acts
+        os.chdir(make_path)
+        with subprocess.Popen(gen_exec_cmd) as make_process:
+            make_process.wait()
+            os.chdir(make_path+"/dist/")
+            with subprocess.Popen(shell_cmd,stdout=subprocess.PIPE) as op_process:
+                op_process.wait()
+                operation_result = op_process.stdout.readlines()[0]
+                operation_result = operation_result.decode("utf-8").replace("\"","")
+
+        # Asserts
+        self.assertEqual(operation_result, expected_result)
+
+        # After
+        os.chdir(make_path)
+        shutil.rmtree(make_path+"/dist")
+        os.chdir(cwd)
