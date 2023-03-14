@@ -1,4 +1,5 @@
 import unittest
+from unittest.mock import patch
 
 from cli.output.shell_output import CLIOutput
 
@@ -301,3 +302,22 @@ class TestParser(unittest.TestCase):
 
         # Asserts
         self.assertTrue(isinstance(parser.output_obj,CLIOutput))
+
+    @patch('builtins.print')
+    def test_output_result(self, print_):
+        """This function should output the
+        content asked by the user either in the changelog
+        file or the shell terminal
+        """
+        # Given
+        parser = Parser()
+        output = "changelog_message"
+        changelog_message = "My message"
+        args = ['-o',output,'-c',changelog_message]
+        parser.update_args(args)
+
+        # Acts
+        parser.output_result()
+
+        # Asserts
+        print_.assert_called_with(changelog_message)

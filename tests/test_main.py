@@ -26,7 +26,7 @@ class TestMain(unittest.TestCase):
         # Asserts
         self.assertTrue(operation_result == expected_result)
 
-    def test_sample_main_function(self):
+    def test_sample_main_function_display(self):
         """Execute the main function in a terminal
         and check if the result is the expected one
         """
@@ -53,4 +53,38 @@ class TestMain(unittest.TestCase):
         # After
         os.chdir(make_path)
         shutil.rmtree(make_path+"/dist")
+        os.chdir(cwd)
+
+    def test_sample_main_function_changelog_write(self):
+        """Execute the main function in a terminal
+        and check if the result is the expected one
+        """
+        # Given
+        cwd = os.getcwd()
+        make_path = cwd.replace("/test/test_main.py","/")
+        gen_exec_cmd = ["make", "exec_file_silent"]
+        shell_cmd = [
+            "./main",
+            "-o", "changelog",
+            "-n", "\"My version\"",
+            "-v", "\"1.0\"",
+            "-c", "My message"
+        ]
+        expected_result = 0
+
+        # Acts
+        os.chdir(make_path)
+        with subprocess.Popen(gen_exec_cmd) as make_process:
+            make_process.wait()
+            os.chdir(make_path+"/dist/")
+            with subprocess.Popen(shell_cmd,stdout=subprocess.PIPE) as op_process:
+                op_process.wait()
+                result = op_process.returncode
+
+        # Asserts
+        self.assertEqual(result,expected_result)
+
+        # After
+        os.chdir(make_path)
+        os.remove(make_path+"/changelog.txt")
         os.chdir(cwd)

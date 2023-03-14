@@ -6,3 +6,4 @@ build/
 htmlcov/
 unit_test/
 .coverage
+changelog.txt

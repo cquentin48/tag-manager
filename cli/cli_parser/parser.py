@@ -1,4 +1,5 @@
 import argparse
+import os
 import sys
 
 
@@ -119,8 +120,15 @@ class Parser:
         """
         match output:
             case "changelog":
+                changelog_parent_directory_path =\
+                    os.path.dirname(sys.executable).replace("/dist","/")
                 self.output_obj = \
-                    FileOutput("changelog.txt",self.name,self.version_number,self.message)
+                    FileOutput(
+                        changelog_parent_directory_path+"/changelog.txt",
+                        self.name,
+                        self.version_number,
+                        self.message
+                    )
             case "name":
                 self.output_obj = CLIOutput(self.name)
             case "number":
