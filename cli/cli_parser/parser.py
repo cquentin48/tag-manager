@@ -128,7 +128,7 @@ class Parser: # pylint: disable=too-many-instance-attributes
         try:
             self.validator = self.create_validator(output,name,version,message,commit_message)
             self.verify_args(output)
-            if commit_message != None and commit_message != "":
+            if commit_message is not None:
                 self.output = output
                 self.parse_commit_message(commit_message)
             else:

@@ -364,6 +364,9 @@ class TestParser(unittest.TestCase):
         print_.assert_called_with(changelog_message)
 
     def test_parse_commit_message(self):
+        """This function should parse commit message
+        and correctly init args for the new tag
+        """
         # Given
         parser = Parser()
         commit_message = "[Release]RELEASE_NAME\n"+\
@@ -381,4 +384,3 @@ class TestParser(unittest.TestCase):
         self.assertEqual(parser.name,expected_name)
         self.assertEqual(parser.version_number,expected_version_number)
         self.assertEqual(parser.message,expected_changelog_message)
-
