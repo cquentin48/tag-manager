@@ -43,12 +43,14 @@ class TestParser(unittest.TestCase):
         name = "New version"
         version_number = "1.0"
         changelog_message = "test message"
+        commit_message = "My message"
 
         args = [
             "-o", output,
             "-n", name,
             "-v", version_number,
             "-c", changelog_message,
+            "-cm", commit_message,
         ]
 
         parser = Parser()
@@ -58,7 +60,8 @@ class TestParser(unittest.TestCase):
             operation_output,
             operation_name,
             operation_version_number,
-            operation_changelog_message
+            operation_changelog_message,
+            operation_changelog_commit_message,
         ] = parser.parse_args(args)
 
         # Asserts
@@ -66,6 +69,7 @@ class TestParser(unittest.TestCase):
         self.assertEqual(operation_name,name)
         self.assertEqual(operation_version_number,version_number)
         self.assertEqual(operation_changelog_message,changelog_message)
+        self.assertEqual(operation_changelog_commit_message,commit_message)
 
     def test_parse_args_llong(self):
         """Test the args cli_parser
@@ -77,12 +81,14 @@ class TestParser(unittest.TestCase):
         name = "New version"
         version_number = "1.0"
         changelog_message = "test message"
+        commit_message = "My commit message"
 
         args = [
             "--output", output,
             "--name", name,
             "--version", version_number,
             "--changelog", changelog_message,
+            "--commitmessage", commit_message
         ]
 
         parser = Parser()
@@ -92,7 +98,8 @@ class TestParser(unittest.TestCase):
             operation_output,
             operation_name,
             operation_version_number,
-            operation_changelog_message
+            operation_changelog_message,
+            operation_changelog_commit_message
         ] = parser.parse_args(args)
 
         # Asserts
@@ -100,10 +107,12 @@ class TestParser(unittest.TestCase):
         self.assertEqual(operation_name,name)
         self.assertEqual(operation_version_number,version_number)
         self.assertEqual(operation_changelog_message,changelog_message)
+        self.assertEqual(operation_changelog_commit_message,commit_message)
 
-    def test_update_args_ok(self):
+    def test_update_args_no_commit_message_ok(self):
         """This function should correctly parse args
-        and update the cli_parser
+        and update the cli_parser with no commit messages
+        entered
         """
         # Given
         output = "changelog"
@@ -128,6 +137,38 @@ class TestParser(unittest.TestCase):
         self.assertEqual(parser.name,name)
         self.assertEqual(parser.version_number,version_number)
         self.assertEqual(parser.message,changelog_message)
+
+    def test_update_args_commit_message_ok(self):
+        """This function should correctly parse args
+        and update the cli_parser with no messages
+        entered
+        """
+        # Given
+        output = "changelog"
+        parser = Parser()
+        commit_message = "[Release]RELEASE_NAME\n"+\
+            "Version:VERSION_NUMBER\n"+\
+            "Changes:\n"+\
+            "CHANGELOG"
+        expected_name = "RELEASE_NAME"
+        expected_version_number = "VERSION_NUMBER"
+        expected_changelog_message = "CHANGELOG"
+
+        args = [
+            "--output", output,
+            "--commitmessage", commit_message,
+        ]
+
+        parser = Parser()
+
+        # Acts
+        parser.update_args(args)
+
+        # Asserts
+        self.assertEqual(parser.output,output)
+        self.assertEqual(parser.name,expected_name)
+        self.assertEqual(parser.version_number,expected_version_number)
+        self.assertEqual(parser.message,expected_changelog_message)
 
     def test_update_args_fails_raise_except(self):
         """This function with incorrect input should raise
@@ -321,3 +362,25 @@ class TestParser(unittest.TestCase):
 
         # Asserts
         print_.assert_called_with(changelog_message)
+
+    def test_parse_commit_message(self):
+        """This function should parse commit message
+        and correctly init args for the new tag
+        """
+        # Given
+        parser = Parser()
+        commit_message = "[Release]RELEASE_NAME\n"+\
+            "Version:VERSION_NUMBER\n"+\
+            "Changes:\n"+\
+            "CHANGELOG"
+        expected_name = "RELEASE_NAME"
+        expected_version_number = "VERSION_NUMBER"
+        expected_changelog_message = "CHANGELOG"
+
+        # Acts
+        parser.parse_commit_message(commit_message)
+
+        # Assert
+        self.assertEqual(parser.name,expected_name)
+        self.assertEqual(parser.version_number,expected_version_number)
+        self.assertEqual(parser.message,expected_changelog_message)
