@@ -1,34 +1,44 @@
 import argparse
+import os
 import sys
 
-from cli.parser.args_validator import ArgsValidator, VALIDATOR_ARGS_CHANGELOG_OK,\
+
+from .args_validator import ArgsValidator, VALIDATOR_ARGS_CHANGELOG_OK,\
     VALIDATOR_ARGS_MESSAGE_OK, VALIDATOR_ARGS_NAME_OK,VALIDATOR_ARGS_NUMBER_OK
+from ..output.file_output import FileOutput
+from ..output.shell_output import CLIOutput
 
 
 class Parser:
-    """CLI parser for tag manager
+    """CLI cli_parser for tag manager
     """
 
     def __init__(self):
-        """CLI parser constructor
+        """CLI cli_parser constructor
         """
         self.parser = self._init_parser()
         self.output = ""
+        self.output_obj = None
         self.name = ""
         self.version_number = ""
         self.message = ""
         self.validator = None
 
     def _init_parser_args(self,parser: argparse.ArgumentParser): #pragma: no cover
-        """Add the arguments to the parser
+        """Add the arguments to the cli_parser
 
         Args:
-            parser (argparse.ArgumentParser): CLI parser
+            parser (argparse.ArgumentParser): CLI cli_parser
         """
         parser.add_argument('-o','--output',required=True)
         parser.add_argument('-n','--name')
         parser.add_argument('-v','--version')
         parser.add_argument('-c','--changelog')
+
+    def output_result(self):
+        """Output the result of the cli_parser
+        """
+        self.output_obj.output_result()
 
     def init_args(self, output:str,name:str,version_number:str,message:str):
         """Initialise the args given by the user in the cli
@@ -43,6 +53,19 @@ class Parser:
         self.name = name
         self.version_number = version_number
         self.message = message
+
+    def __eq__(self, __o: object) -> bool:
+        if not isinstance(__o,Parser):
+            return False
+
+        output_str_eq = self.output == __o.output
+        message_eq = self.name == __o.message
+        version_number_eq = self.version_number == __o.message
+        message_eq = self.message == __o.message
+        output_obj_eq = self.output_obj == __o.output_obj
+
+        return output_str_eq and message_eq\
+            and version_number_eq and output_obj_eq
 
     def verify_args(self, output: str):
         """Verify the args and raises an exception if
@@ -85,12 +108,38 @@ class Parser:
             self.validator = self.create_validator(output,name,version,message)
             self.verify_args(output)
             self.init_args(output,name,version,message)
+            self.init_output(self.output)
         except TypeError as _:
             sys.exit(1)
 
+    def init_output(self, output: str):
+        """Init the output type
+
+        Args:
+            output (str): Type of output chosen by user
+        """
+        match output:
+            case "changelog":
+                changelog_parent_directory_path =\
+                    os.path.dirname(sys.executable).replace("/dist","/")
+                self.output_obj = \
+                    FileOutput(
+                        changelog_parent_directory_path+"/changelog.txt",
+                        self.name,
+                        self.version_number,
+                        self.message
+                    )
+            case "name":
+                self.output_obj = CLIOutput(self.name)
+            case "number":
+                self.output_obj = CLIOutput(self.version_number)
+            case "changelog_message":
+                self.output_obj = CLIOutput(self.message)
+
+
 
     def _init_parser(self)->argparse.ArgumentParser: #pragma: no cover
-        """Init the parser
+        """Init the cli_parser
         """
         parser = argparse.ArgumentParser(
                 prog="Tag manager Parser",

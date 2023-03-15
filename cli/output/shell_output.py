@@ -12,7 +12,14 @@ class CLIOutput:
             raise TypeError("Argument is empty!")
         self.arg = arg
 
-    def display_result(self): #pragma: no cover
+    def output_result(self): #pragma: no cover
         """Display the args result in the output
         """
         print(self.arg)
+
+    def __eq__(self, __o: object) -> bool:
+        if not isinstance(__o,CLIOutput):
+            return False
+
+        arg_eq = __o.arg == self.arg
+        return arg_eq

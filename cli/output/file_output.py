@@ -53,7 +53,7 @@ class FileOutput:
         parent_directory_path = self.get_parent_directory_path()
         return os.path.isdir(parent_directory_path)
 
-    def append_to_file(self):
+    def output_result(self):
         """Appends the results in the changefile.
         If the folder doesn't exists, an exception is
         raised.
@@ -78,3 +78,13 @@ class FileOutput:
             file.write("Changelog"+"\n")
             file.write(str(self.message)+"\n")
             file.write("**************"+"\n")
+
+    def __eq__(self, __o: object) -> bool:
+        if not isinstance(__o,FileOutput):
+            return False
+
+        file_path_eq = __o.file_path == self.file_path
+        name_eq = __o.name == self.name
+        version_eq = __o.version == self.version
+        message_eq = __o.message == self.message
+        return file_path_eq and name_eq and version_eq and message_eq
