@@ -170,96 +170,57 @@ class TestParser(unittest.TestCase):
         self.assertEqual(parser.version_number,expected_version_number)
         self.assertEqual(parser.message,expected_changelog_message)
 
-    def test_update_args_fails_raise_except(self):
-        """This function with incorrect input should raise
-        an exception and exit 
+    def test_update_args_commit_message_parse(self):
+        """Check if the commit message is parsed
         """
         # Given
-        output = "mlkmk"
-        name = "New version"
-        version_number = "1.0"
-        changelog_message = "test message"
-
-        args = [
-            "--output", output,
-            "--name", name,
-            "--version", version_number,
-            "--changelog", changelog_message,
-        ]
-
         parser = Parser()
+        commit_message = "[Release]RELEASE_NAME\n"+\
+            "Version:VERSION_NUMBER\n"+\
+            "Changes:\n"+\
+            "CHANGELOG"
+        expected_name = "RELEASE_NAME"
+        expected_version_number = "VERSION_NUMBER"
+        expected_changelog_message = "CHANGELOG"
+        args = ['-o', 'name','-cm',commit_message]
 
-        # Acts & Assert
-        self.assertRaises(SystemExit,parser.update_args,args)
+        # Acts
+        parser.update_args(args)
 
-    def test_verify_args_incorrect_name_type_error(self):
-        """The method verify_args of the tested should raise
-        a TypeError if the version name entered is incorrect
+        # Asserts
+        self.assertEqual(parser.name,expected_name)
+        self.assertEqual(parser.version_number,expected_version_number)
+        self.assertEqual(parser.message,expected_changelog_message)
+
+    def test_verify_args_number_no_number_type_error(self):
+        """Check if the verify_args method should raise a TypeError
+        Exception when no number is given
         """
-        # Given
-        # Given
-        output = "name"
-        name = ""
-        version_number = "1.0"
-        changelog_message = "test message"
-
-        args = [
-            "--output", output,
-            "--name", name,
-            "--version", version_number,
-            "--changelog", changelog_message,
-        ]
-
-        parser = Parser()
-
-        # Acts & Assert
-        self.assertRaises(SystemExit,parser.update_args,args)
-
-    def test_verify_args_incorrect_version_number_type_error(self):
-        """The method verify_args of the tested should raise
-        a TypeError if the version number entered is incorrect
-        """
-        # Given
         # Given
         output = "number"
-        name = "My version"
-        version_number = ""
-        changelog_message = "test message"
-
-        args = [
-            "--output", output,
-            "--name", name,
-            "--version", version_number,
-            "--changelog", changelog_message,
-        ]
+        version = ""
+        validator = ArgsValidator(output,version=version)
 
         parser = Parser()
+        parser.validator = validator
 
-        # Acts & Assert
-        self.assertRaises(SystemExit,parser.update_args,args)
+        # Acts & Asserts
+        self.assertRaises(TypeError,parser.verify_args,output)
 
-    def test_verify_args_incorrect_changelog_type_error(self):
-        """The method verify_args of the tested should raise
-        a TypeError if the version changelog entered is incorrect
+    def test_verify_args_unknown_type_error(self):
+        """Check if the verify_args method should raise a TypeError
+        Exception when no number is given
         """
         # Given
-        # Given
-        output = "changelog_message"
-        name = "My version"
-        version_number = "1.0"
-        changelog_message = ""
-
-        args = [
-            "--output", output,
-            "--name", name,
-            "--version", version_number,
-            "--changelog", changelog_message,
-        ]
+        output = "kfdlmjfl"
+        version = ""
+        validator = ArgsValidator(output,version=version)
 
         parser = Parser()
+        parser.validator = validator
 
-        # Acts & Assert
-        self.assertRaises(SystemExit,parser.update_args,args)
+        # Acts & Asserts
+        self.assertRaises(TypeError,parser.verify_args,output)
 
     def test_eq_two_identical_objects_should_returns_true(self):
         """Check if the equality method returns True when two
