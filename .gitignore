@@ -1,5 +1,10 @@
-/.venv/
+/.idea
+/.venv
 .coverage
 __pycache__/
+build/
+dist/
 htmlcov/
 res/
+unit_test/
+changelog.txt

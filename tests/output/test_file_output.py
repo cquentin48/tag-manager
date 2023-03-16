@@ -255,7 +255,7 @@ class TestFileOuput(unittest.TestCase):
         )
 
         # Acts & Asserts
-        self.assertRaises(FileNotFoundError,file_output.append_to_file)
+        self.assertRaises(FileNotFoundError,file_output.output_result)
 
     def test_append_to_file_known_parent_directory_path_ok(self):
         """When the parent directory exists (created here), the file is
@@ -289,7 +289,7 @@ class TestFileOuput(unittest.TestCase):
         ]
 
         # Acts
-        file_output.append_to_file()
+        file_output.output_result()
 
         # Asserts
         with open(output_file_path, 'r',encoding="utf-8") as file:
@@ -341,8 +341,8 @@ class TestFileOuput(unittest.TestCase):
         ]
 
         # Acts
-        file_output.append_to_file()
-        file_output.append_to_file()
+        file_output.output_result()
+        file_output.output_result()
 
         # Asserts
         with open(output_file_path, 'r',encoding="utf-8") as file:
@@ -352,6 +352,110 @@ class TestFileOuput(unittest.TestCase):
                     single_line.replace('\n',''),
                     expected_output[i]
                 )
+
+        # After
+        remove_directory(directory_path)
+
+    def test_eq_two_file_output_same_args_equals_true(self):
+        """When two file_output objects are created with same arguments
+        the equality function should returns true
+        """
+        # Given
+        output_file_path = os.path.abspath(__file__)\
+            .replace("/tests/output/test_file_output.py","/res/changelog.txt")
+        name = "New version"
+        version = "1.0"
+        message = "Test message"
+
+        directory_path = output_file_path.replace("changelog.txt","")
+
+        # Acts
+        create_directory(directory_path)
+
+        file_output_1 = FileOutput(
+            output_file_path,
+            name,
+            version,
+            message
+        )
+
+        file_output_2 = FileOutput(
+            output_file_path,
+            name,
+            version,
+            message
+        )
+
+        # Asserts
+        self.assertEqual(file_output_1,file_output_2)
+
+        # After
+        remove_directory(directory_path)
+
+    def test_eq_two_file_output_different_args_equals_false(self):
+        """When two file_output objects are created with differents arguments
+        the equality function should returns false
+        """
+        # Given
+        output_file_path = os.path.abspath(__file__)\
+            .replace("/tests/output/test_file_output.py","/res/changelog.txt")
+        name = "New version"
+        version = "1.0"
+        message_1 = "Test message"
+        message_2 = "Test message2"
+
+        directory_path = output_file_path.replace("changelog.txt","")
+
+        # Acts
+        create_directory(directory_path)
+
+        file_output_1 = FileOutput(
+            output_file_path,
+            name,
+            version,
+            message_1
+        )
+
+        file_output_2 = FileOutput(
+            output_file_path,
+            name,
+            version,
+            message_2
+        )
+
+        # Asserts
+        self.assertNotEqual(file_output_1,file_output_2)
+
+        # After
+        remove_directory(directory_path)
+
+    def test_eq_one_file_output_with_no_file_output_equals_false(self):
+        """When one file_output objects is created with one non file-output object
+        the equality function should returns false
+        """
+        # Given
+        output_file_path = os.path.abspath(__file__)\
+            .replace("/tests/output/test_file_output.py","/res/changelog.txt")
+        name = "New version"
+        version = "1.0"
+        message_1 = "Test message"
+
+        directory_path = output_file_path.replace("changelog.txt","")
+
+        # Acts
+        create_directory(directory_path)
+
+        file_output = FileOutput(
+            output_file_path,
+            name,
+            version,
+            message_1
+        )
+
+        other_object = 1231
+
+        # Asserts
+        self.assertNotEqual(file_output,other_object)
 
         # After
         remove_directory(directory_path)

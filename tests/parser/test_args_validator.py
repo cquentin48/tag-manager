@@ -1,10 +1,11 @@
 import unittest
-from cli.parser.args_validator import ArgsValidator,\
+from cli.cli_parser.args_validator import ArgsValidator,\
     VALIDATOR_ARGS_UNKOWN_OUTPUT, VALIDATOR_ARGS_NUMBER_OK,\
     VALIDATOR_ARGS_CHANGELOG_NO_MESSAGE, VALIDATOR_ARGS_CHANGELOG_NO_NAME,\
     VALIDATOR_ARGS_CHANGELOG_NO_VERSION_NUMBER, VALIDATOR_ARGS_CHANGELOG_OK,\
     VALIDATOR_ARGS_MESSAGE_NO_MESSAGE, VALIDATOR_ARGS_MESSAGE_OK,\
-    VALIDATOR_ARGS_NAME_NO_NAME, VALIDATOR_ARGS_NAME_OK, VALIDATOR_ARGS_NUMBER_NO_NUMBER
+    VALIDATOR_ARGS_NAME_NO_NAME, VALIDATOR_ARGS_NAME_OK, VALIDATOR_ARGS_NUMBER_NO_NUMBER,\
+    VALIDATOR_ARGS_NO_COMMIT_MESSAGE
 
 class TestArgsValidator(unittest.TestCase):
     """Args validator test case class
@@ -12,7 +13,7 @@ class TestArgsValidator(unittest.TestCase):
 
     def test_verify_args_changelog_ok(self):
         """Check if the validator returns true
-        when the parser has every info for the changelog
+        when the cli_parser has every info for the changelog
         """
         # Given
         name = "My version"
@@ -30,7 +31,7 @@ class TestArgsValidator(unittest.TestCase):
 
     def test_verify_args_name_ok(self):
         """Check if the validator returns true
-        when the parser has every info for the name
+        when the cli_parser has every info for the name
         """
         # Given
         name = "My version"
@@ -46,7 +47,7 @@ class TestArgsValidator(unittest.TestCase):
 
     def test_verify_args_number_ok(self):
         """Check if the validator returns true
-        when the parser has every info for the number
+        when the cli_parser has every info for the number
         """
         # Given
         number = "1.0"
@@ -62,7 +63,7 @@ class TestArgsValidator(unittest.TestCase):
 
     def test_verify_args_changelog_msg_ok(self):
         """Check if the validator returns true
-        when the parser has every info for the
+        when the cli_parser has every info for the
         changelog message
         """
         # Given
@@ -78,7 +79,7 @@ class TestArgsValidator(unittest.TestCase):
         self.assertEqual(output,VALIDATOR_ARGS_MESSAGE_OK)
 
     def test_verify_args_changelog_no_name_error(self):
-        """This test should raise an exception when
+        """This test should raise an error number when
         the name is not entered with the changelog output
         """
         # Given
@@ -95,7 +96,7 @@ class TestArgsValidator(unittest.TestCase):
         self.assertEqual(output,VALIDATOR_ARGS_CHANGELOG_NO_NAME)
 
     def test_verify_args_changelog_no_number_error(self):
-        """This test should raise an exception when
+        """This test should raise an error number when
         the version number is not entered with the changelog output
         """
         # Given
@@ -111,8 +112,31 @@ class TestArgsValidator(unittest.TestCase):
         # Asserts
         self.assertEqual(output,VALIDATOR_ARGS_CHANGELOG_NO_VERSION_NUMBER)
 
+    def test_verify_args_changelog_no_args_error(self):
+        """This test should raise an error number when
+        no args is entered with the changelog output
+        """
+        # Given
+        name = ""
+        changelog = ""
+        version_number=""
+        output = "changelog"
+        commit_message = ""
+
+        validator = ArgsValidator(
+            output,name=name,changelog=changelog,
+            version=version_number,
+            commit_message=commit_message
+        )
+
+        # Acts
+        output = validator.verify_args()
+
+        # Asserts
+        self.assertEqual(output,VALIDATOR_ARGS_NO_COMMIT_MESSAGE)
+
     def test_verify_args_changelog_no_changelog_message_error(self):
-        """This test should raise an exception when
+        """This test should raise an error number when
         the version number is not entered with the changelog output
         """
         # Given
@@ -174,7 +198,7 @@ class TestArgsValidator(unittest.TestCase):
         self.assertEqual(output,VALIDATOR_ARGS_MESSAGE_NO_MESSAGE)
 
     def test_verify_args_other_output_error(self):
-        """This test should raise an exception when
+        """This test should raise an error number when
         the version changelog message is not entered with the changelog message output
         """
         # Given
