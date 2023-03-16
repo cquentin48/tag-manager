@@ -5,11 +5,12 @@ on:
     branches:
       [main, develop]
 
+  env:
+    VERSION_TITLE: ''
+    VERSION_NUMBER: ''
+    VERSION_CHANGELOG: ''
+
 jobs:
-    env:
-      VERSION_TITLE: ''
-      VERSION_NUMBER: ''
-      VERSION_CHANGELOG: ''
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
