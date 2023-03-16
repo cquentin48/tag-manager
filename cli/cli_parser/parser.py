@@ -1,6 +1,7 @@
 import argparse
 import os
 import sys
+import log21
 
 
 from .args_validator import ArgsValidator, VALIDATOR_ARGS_CHANGELOG_OK,\
@@ -16,6 +17,7 @@ class Parser: # pylint: disable=too-many-instance-attributes
     def __init__(self):
         """CLI cli_parser constructor
         """
+        self.log = log21.get_logger("Tag-manager-cli")
         self.parser = self._init_parser()
         self.output = ""
         self.output_obj = None
@@ -125,17 +127,14 @@ class Parser: # pylint: disable=too-many-instance-attributes
             args (list): Args input of the user
         """
         [output,name,version,message,commit_message] = self.parse_args(args)
-        try:
-            self.validator = self.create_validator(output,name,version,message,commit_message)
-            self.verify_args(output)
-            if commit_message is not None:
-                self.output = output
-                self.parse_commit_message(commit_message)
-            else:
-                self.init_args(output,name,version,message)
-            self.init_output(self.output)
-        except TypeError as _:
-            sys.exit(1)
+        self.validator = self.create_validator(output,name,version,message,commit_message)
+        self.verify_args(output)
+        if commit_message is not None:
+            self.output = output
+            self.parse_commit_message(commit_message)
+        else:
+            self.init_args(output,name,version,message)
+        self.init_output(self.output)
 
     def init_output(self, output: str):
         """Init the output type
