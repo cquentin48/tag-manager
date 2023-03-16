@@ -3,14 +3,10 @@ name: Automatic tag creation and release
 on:
   push:
     branches:
-      [main, develop]
-
-  env:
-    VERSION_TITLE: ''
-    VERSION_NUMBER: ''
-    VERSION_CHANGELOG: ''
+      [main, develop,feat/CI]
 
 jobs:
+  release:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -19,9 +15,15 @@ jobs:
         run: docker-compose up -d --build
       - name: Build the app
         run: docker exec tag-manager make exec_file
-      - name: Display the new version name
-        run: docker exec tag-manager ./dist/main -o name -cm ${{github.event.head_commit.message}} #Replace here the name by the commit message
-      - name: Display the new version number
-        run: docker exec tag-manager ./dist/main -o message -cm ${{github.event.head_commit.message}} #Replace here the name by the commit message
-      - name: Display the new version changelog
-        run: docker exec tag-manager ./dist/main -o changelog -cm ${{github.event.head_commit.message}} #Replace here the name by the commit message
+      - name: Tag release creation
+        id: create_release
+        uses: actions/create-release@latest
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: docker exec tag-manager ./dist/main -o name -cm "${{github.event.head_commit.message}}"
+          release_name: docker exec tag-manager ./dist/main -o name -cm "${{github.event.head_commit.message}}"
+          body: |
+            Version:docker exec tag-manager ./dist/main -o number -cm "${{github.event.head_commit.message}}"
+            Changelog
+            docker exec tag-manager ./dist/main -o changelog_message -cm "${{github.event.head_commit.message}}"
