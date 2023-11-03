@@ -1,0 +1,29 @@
+name: Automatic tag creation and release
+
+on:
+  push:
+    branches:
+      [main, develop,feat/CI]
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build web app stack
+        run: docker-compose up -d --build
+      - name: Build the app
+        run: docker exec tag-manager make exec_file
+      - name: Tag release creation
+        id: create_release
+        uses: actions/create-release@latest
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: docker exec tag-manager ./dist/main -o name -cm "${{github.event.head_commit.message}}"
+          release_name: docker exec tag-manager ./dist/main -o name -cm "${{github.event.head_commit.message}}"
+          body: |
+            Version:docker exec tag-manager ./dist/main -o number -cm "${{github.event.head_commit.message}}"
+            Changelog
+            docker exec tag-manager ./dist/main -o changelog_message -cm "${{github.event.head_commit.message}}"
